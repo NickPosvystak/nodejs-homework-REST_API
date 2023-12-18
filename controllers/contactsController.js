@@ -6,7 +6,7 @@ const {
   addNewContact,
   deleteContact,
   updateItem,
-} = require("../models/index");
+} = require("../models/serviceContacts");
 
 exports.getAllContacts = catchAsync(async (req, res) => {
   const data = await listContacts();
