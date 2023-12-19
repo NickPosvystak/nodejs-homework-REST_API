@@ -16,6 +16,6 @@ const schema = Joi.object({
     "string.base": "Phone must be a string",
     "any.required": "missing required phone field",
   }),
-});
+  });
 
 module.exports = schema;

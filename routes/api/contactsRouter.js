@@ -16,4 +16,8 @@ router
   .delete(contactsController.removeContact)
   .put(validateFields(schema), contactsController.updateContact);
 
+router
+  .route("/:contactId/favorite")
+  .patch(contactsController.updateStatusContact);
+
 module.exports = router;

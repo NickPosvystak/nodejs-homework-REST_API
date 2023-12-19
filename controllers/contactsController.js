@@ -6,6 +6,7 @@ const {
   addNewContact,
   deleteContact,
   updateItem,
+  updateContactStatus,
 } = require("../models/serviceContacts");
 
 exports.getAllContacts = catchAsync(async (req, res) => {
@@ -54,4 +55,19 @@ exports.updateContact = catchAsync(async (req, res) => {
   const result = await updateItem(contactId, req.body);
 
   res.status(200).json(result);
+});
+
+exports.updateStatusContact = catchAsync(async (req, res) => {
+  const { contactId } = req.params;
+   const { favorite } = req.body;
+
+  // Перевірка наявності поля favorite у запиті
+  if (typeof favorite === "undefined") {
+    return res.status(400).json({ message: "missing field favorite" });
+  }
+  const result = await updateContactStatus(contactId, req.body);
+
+  res.status(200).json(result);
+
+  return result;
 });
