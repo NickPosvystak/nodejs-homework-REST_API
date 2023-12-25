@@ -1,3 +1,4 @@
+const { genSalt, hash, compare } = require("bcrypt");
 const { model, Schema } = require("mongoose");
 
 const userSchema = new Schema({
@@ -17,6 +18,18 @@ const userSchema = new Schema({
   },
   token: String,
 });
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  const salt = await genSalt(10);
+  this.password = await hash(this.password, salt);
+
+  next();
+});
+
+userSchema.methods.checkPassword = (candidate, passwdHash) =>
+  compare(candidate, passwdHash);
 
 const User = model("User", userSchema);
 

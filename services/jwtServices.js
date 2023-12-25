@@ -1,13 +1,15 @@
 const jwt = require("jsonwebtoken");
 
-const { serverConfig } = require("../configs");
-const { httpError } = require("../utils");
-const { serviceContacts } = require("../models");
+const { serverConfig } = require("../config");
+const { httpError } = require("../units");
 
-exports.signToken = (id) => 
-  jwt.sign({ id }, serverConfig.jwtSecret,{ 
-    expiresIn: serviceContacts.jwtExpires,
+
+exports.signToken = (id) =>
+  jwt.sign({ id }, serverConfig.jwtSecret, {
+    expiresIn: serverConfig.jwtExpires,
   });
+
+
 exports.checkToken = (token) => {
   if (!token) throw new httpError(401, "Not logged in..");
 
@@ -19,5 +21,4 @@ exports.checkToken = (token) => {
     throw new httpError(401, "Not logged in..");
   }
 };
-
 

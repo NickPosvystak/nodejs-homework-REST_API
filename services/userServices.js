@@ -1,14 +1,21 @@
-const { Types } = require("mongoose");
+// const { Types } = require("mongoose");
 
 const User = require("../models/userModel");
 const { httpError } = require("../units");
+const { signToken } = require("./jwtServices");
 
-exports.createUser = async (userData) => {
-  const newUser = await User.create(userData);
+exports.registerUser = async (userData) => {
+
+  const newUserData = {
+...userData,
+  }
+  const newUser = await User.create(newUserData);
 
   newUser.password = undefined;
 
-  return newUser;
+   const token = signToken(newUser.id);
+
+   return { user: newUser, token };
 };
 
 exports.checkUserExists = async (filter) => {
@@ -17,14 +24,14 @@ exports.checkUserExists = async (filter) => {
   if (userExists) throw new httpError(409, "User exists");
 };
 
-exports.signup = async (data) => {
-  const newUserData = {
-    ...data,
-  };
-  const newUser = await User.create(newUserData);
-  newUser.password = undefined;
+// exports.signup = async (data) => {
+//   const newUserData = {
+//     ...data,
+//   };
+//   const newUser = await User.create(newUserData);
+//   newUser.password = undefined;
 
-  const token = signToken(newUser.id);
+//   const token = signToken(newUser.id);
 
-  return { user: newUser, token };
-};
+//   return { user: newUser, token };
+// };
