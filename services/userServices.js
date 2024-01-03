@@ -4,19 +4,19 @@ const User = require("../models/userModel");
 const { httpError } = require("../units");
 const { signToken } = require("./jwtServices");
 
-exports.registerUser = async (userData) => {
+// exports.registerUser = async (userData) => {
 
-  const newUserData = {
-...userData,
-  }
-  const newUser = await User.create(newUserData);
+//   const newUserData = {
+// ...userData,
+//   }
+//   const newUser = await User.create(newUserData);
 
-  newUser.password = undefined;
+//   newUser.password = undefined;
 
-   const token = signToken(newUser.id);
+//    const token = signToken(newUser.id);
 
-   return { user: newUser, token };
-};
+//    return { user: newUser, token };
+// };
 
 exports.checkUserExists = async (filter) => {
   const userExists = await User.exists(filter);
