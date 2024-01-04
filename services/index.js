@@ -1,4 +1,4 @@
-const { userServices } = require("./userServices");
+const userServices  = require("./userServices");
 const jwt = require("./jwtServices");
 
 module.exports = {

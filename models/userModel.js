@@ -1,8 +1,10 @@
 const { genSalt, hash, compare } = require("bcrypt");
 const { model, Schema } = require("mongoose");
 const Joi = require("joi");
+const { regex } = require("../constants");
+const handleMongooseError = require("../units/mongooseError");
 
-const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 
 const userSchema = new Schema({
  
@@ -23,27 +25,18 @@ const userSchema = new Schema({
   token: String,
 });
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.post("save", handleMongooseError);
 
-  const salt = await genSalt(10);
-  this.password = await hash(this.password, salt);
-
-  next();
-});
-
-userSchema.methods.checkPassword = (candidate, passwdHash) =>
-  compare(candidate, passwdHash);
 
 const registerSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
+  email: Joi.string().pattern(regex.emailRegexp).required(),
+  password: Joi.string().pattern(regex.PASSWD_REGEX).min(6).required(),
   subscription: Joi.string(),
 });
 
 const loginSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
+  email: Joi.string().pattern(regex.emailRegexp).required(),
+  password: Joi.string().pattern(regex.PASSWD_REGEX).min(6).required(),
   subscription: Joi.string(),
 });
 
