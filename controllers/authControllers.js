@@ -3,6 +3,8 @@ const { User } = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const { catchAsync, httpError } = require("../units");
 const { signToken } = require("../services/jwtServices");
+const { JWT_SECRET } = process.env;
+const { jwtExpires} = process.env;
 
 
 const register = catchAsync(async (req, res) => {
@@ -16,7 +18,7 @@ const register = catchAsync(async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 10);
   console.log("hashPassword: ", hashPassword);
 
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({ email, password: hashPassword });
   console.log("newUser:-------------------->>> ", newUser);
 
   res.status(201).json({
@@ -44,18 +46,22 @@ const login = catchAsync(async (req, res) => {
     user.password
   );
 
-  console.log("passwordCompare----------->❓:", passwordCompare);
+  console.log("passwordCompare----------->:", passwordCompare);
 
   if (!passwordCompare) {
     throw httpError(401, "Password is wrong");
   }
 
-  // const token = signToken(user._id);
-
-  // await User.findByIdAndUpdate(user._id, { token });
-
+   const payload = {
+     id: user._id,
+   };
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: jwtExpires });
+  
+  // await User.findByIdAndUpdate(payload, { token });
+  
+  console.log('token: -------------------------->', token);
   res.status(200).json({
-    // token,
+    token,
     user: {
       email: user.email,
       subscription: user.subscription,
