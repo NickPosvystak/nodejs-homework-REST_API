@@ -2,22 +2,22 @@ const express = require("express");
 
 const router = express.Router();
 const { contactsController } = require("../../controllers");
-const { validateFields } = require("../../middleware");
+const { validateFields, authenticateToken } = require("../../middleware");
 const schema = require("../../validation/schema");
 
 router
   .route("/")
-  .get(contactsController.getAllContacts)
-  .post(validateFields(schema), contactsController.createContact);
+  .get(authenticateToken, contactsController.getAllContacts)
+  .post(authenticateToken, validateFields(schema), contactsController.createContact);
 
 router
   .route("/:contactId")
-  .get(contactsController.getById)
-  .delete(contactsController.removeContact)
-  .put(validateFields(schema), contactsController.updateContact);
+  .get(authenticateToken, contactsController.getById)
+  .delete(authenticateToken, contactsController.removeContact)
+  .put(authenticateToken, validateFields(schema), contactsController.updateContact);
 
 router
   .route("/:contactId/favorite")
-  .patch(contactsController.updateStatusContact);
+  .patch(authenticateToken, contactsController.updateStatusContact);
 
 module.exports = router;

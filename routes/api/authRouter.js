@@ -5,6 +5,7 @@ const { authMiddleware, validateFields } = require("../../middleware");
 const { authControllers } = require("../../controllers");
 const { userSchema } = require("../../models/userModel");
 const { checkSignupData } = require("../../middleware/authMiddleware");
+const { authenticateToken } = require("../../middleware/");
 
 const { schemas } = require("../../models/userModel");
 
@@ -16,10 +17,11 @@ router.post(
 
 router.post(
   "/login",
-  validateFields(schemas.loginSchema),
+    validateFields(schemas.loginSchema),
   authControllers.login
 );
-// .route("/users/logout")
-// .route("/users/current");
 
-module.exports = router;
+router.post("/logout", authenticateToken, authControllers.logout);
+  // .route("/users/current");
+
+  (module.exports = router);

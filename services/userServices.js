@@ -1,7 +1,7 @@
 // const { Types } = require("mongoose");
 
 const User = require("../models/userModel");
-const { httpError } = require("../units");
+const { HttpError } = require("../units");
 const { signToken } = require("./jwtServices");
 
 // exports.registerUser = async (userData) => {
@@ -21,7 +21,7 @@ const { signToken } = require("./jwtServices");
 exports.checkUserExists = async (filter) => {
   const userExists = await User.exists(filter);
 
-  if (userExists) throw new httpError(409, "User exists");
+  if (userExists) throw new HttpError(409, "User exists");
 };
 
 exports.register = async (data) => {
@@ -42,11 +42,11 @@ exports.login = async ({ email, password }) => {
   const user = await User.findOne({ email }).select("+password");
   console.log("user LOGIN---------------->>: ", user);
 
-  if (!user) throw new httpError(401, "Not authorized..");
+  if (!user) throw new HttpError(401, "Not authorized..");
 
   const passwdIsValid = await user.checkPassword(password, user.password);
 
-  if (!passwdIsValid) throw new httpError(401, "Not authorized..");
+  if (!passwdIsValid) throw new HttpError(401, "Not authorized..");
 
   // user.password = undefined;
 

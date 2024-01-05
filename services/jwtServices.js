@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const { httpError } = require("../units");
+const { HttpError } = require("../units");
 const { serverConfig } = require("../config");
 
 
@@ -11,7 +11,7 @@ exports.signToken = (id) =>
 
 
 exports.checkToken = (token) => {
-  if (!token) throw new httpError(401, "Not logged in...");
+  if (!token) throw new HttpError(401, "Not logged in...");
 
   try {
     const { id } = jwt.verify(token, serverConfig.jwtSecret);
@@ -19,7 +19,7 @@ exports.checkToken = (token) => {
     return id;
     
   } catch (err) {
-    throw new httpError(401, "Not logged in...");
+    throw new HttpError(401, "Not logged in...");
   }
 };
 
