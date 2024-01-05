@@ -32,11 +32,7 @@ const register = catchAsync(async (req, res) => {
 const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-
-  console.log("Found User Login:========================>", user);
-  console.log("Password:----------------->", password);
-  console.log("Stored hashed password:--->", user.password);
-  
+   
   if (!user) {
     throw httpError(401, "Email is wrong");
   }
@@ -48,20 +44,15 @@ const login = catchAsync(async (req, res) => {
 
   console.log("passwordCompare----------->:", passwordCompare);
 
-  if (!passwordCompare) {
+if (!passwordCompare) {
     throw httpError(401, "Password is wrong");
   }
 
-   const payload = {
-     id: user._id,
-   };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: jwtExpires });
-  
-  // await User.findByIdAndUpdate(payload, { token });
-  
-  console.log('token: -------------------------->', token);
-  res.status(200).json({
-    token,
+
+const token = signToken(user.id);
+
+   res.status(200).json({
+    token: token,
     user: {
       email: user.email,
       subscription: user.subscription,
