@@ -66,20 +66,23 @@ const token = jwtServices.signToken(user.id);
 
 const logout = catchAsync(async (req, res) => {
 
-  const userId = req.user._id;
-  console.log('userId:=============> ', userId);
+  // const userId = req.user._id;
+  // console.log('userId:=============> ', userId);
 
-  
-  const user = await User.findById(userId);
-  console.log('user:================> ', user);
+   const { _id } = req.user;
+   await User.findByIdAndUpdate(_id, { token: "" });
 
- if (!user) {
-   throw new HttpError(401, "Not authorized");
-  }
+   res.status(204).json({ message: "Success", user: req.user });
+  // const user = await User.findById(userId);
+  // console.log('user:================> ', user);
 
-  user.token = undefined;
+//  if (!user) {
+//    throw new HttpError(401, "Not authorized");
+//   }
 
-  await user.save();
+//   user.token = undefined;
+
+//   await user.save();
 
    res.status(204).send();
 }

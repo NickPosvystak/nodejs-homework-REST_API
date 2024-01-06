@@ -1,9 +1,12 @@
-// const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+const { jwtSecret } = require("../config/serverConfig");
 const { User } = require("../models/userModel");
 const { jwtServices } = require("../services");
 const { HttpError, catchAsync } = require("../units");
 
-const authenticateToken = catchAsync(async (req, res, next) => {
+// jwtSecret = process.env.JWT_SECRET;
+
+const authenticateToken = async (req, res, next) => {
   //  const { authorization = "" } = req.headers;
   //  const [bearer, token] = authorization.split(" ");
 
@@ -39,11 +42,14 @@ const authenticateToken = catchAsync(async (req, res, next) => {
     return next(HttpError(401, "Not authorized"));
   }
   try {
-    const userId = jwtServices.checkToken(token);
-    const user = await User.findById(userId);
+    // const userId = jwtServices.checkToken(token);
+    // const user = await User.findById(userId);
 
-    console.log('user: ============>', user);
-    if (!user || !user.token || user.token !== token) {
+    const { id } = jwt.verify(token, jwtSecret); // Replace YOUR_JWT_SECRET with your actual JWT secret
+    const user = await User.findById(id);
+
+    console.log('❌user: ============>', user);
+    if (!user ) {
 
        console.log("❓Not authorized - User not found or token mismatch");
      return next(new HttpError(401, "Not authorized"));
@@ -53,9 +59,12 @@ const authenticateToken = catchAsync(async (req, res, next) => {
     console.log("User authorized:=========>", user);
     next();
   } catch (error) {
+     if (error instanceof jwt.TokenExpiredError) {
+       return res.status(401).json({ message: "Token expired" });
+     }
     console.error("Error during token verification:", error);
     return next(new HttpError(401, "Not authorized"));
   }
-});
+};
 
 module.exports = authenticateToken;
