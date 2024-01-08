@@ -1,10 +1,8 @@
 const express = require("express");
 
 const router = express.Router();
-const { authMiddleware, validateFields } = require("../../middleware");
+const { validateFields } = require("../../middleware");
 const { authControllers } = require("../../controllers");
-const { userSchema } = require("../../models/userModel");
-const { checkSignupData } = require("../../middleware/authMiddleware");
 const { authenticateToken } = require("../../middleware/");
 
 const { schemas } = require("../../models/userModel");
@@ -22,6 +20,7 @@ router.post(
 );
 
 router.post("/logout", authenticateToken, authControllers.logout);
-  // .route("/users/current");
 
-  (module.exports = router);
+router.get("/current", authenticateToken, authControllers.current)
+
+  module.exports = router;
