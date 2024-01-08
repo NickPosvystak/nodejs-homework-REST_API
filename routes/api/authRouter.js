@@ -23,4 +23,6 @@ router.post("/logout", authenticateToken, authControllers.logout);
 
 router.get("/current", authenticateToken, authControllers.current)
 
+router.patch("/", authenticateToken, authControllers.subscription)
+
   module.exports = router;
