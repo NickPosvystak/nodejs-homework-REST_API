@@ -13,7 +13,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log(`Database connection successful`);
+    console.log(`Database connection successful ✅`);
 
     app.listen(PORT, () => {
       console.log(`Server running. Use our API on port ==> ${PORT}`);
@@ -23,5 +23,3 @@ mongoose
     console.error("Error connecting to MongoDB:", error.message);
     process.exit(1);
   });
-
-

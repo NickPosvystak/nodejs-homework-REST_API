@@ -12,6 +12,10 @@ const contactSchema = new Schema({
   },
   phone: { type: String, required: true },
   favorite: { type: Boolean, default: false },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+  },
 });
 
 const Contact = model("Contact", contactSchema);
