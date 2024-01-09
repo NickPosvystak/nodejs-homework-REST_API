@@ -25,4 +25,6 @@ router.get("/current", authenticateToken, authControllers.current)
 
 router.patch("/", authenticateToken, authControllers.subscription)
 
+router.patch("/avatars", authenticateToken, authControllers.avatars)
+
   module.exports = router;

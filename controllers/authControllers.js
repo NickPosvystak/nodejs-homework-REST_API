@@ -87,10 +87,15 @@ const subscription = async (req, res) => {
   }
 };
 
+const avatars = catchAsync(
+  
+)
+
 module.exports = {
   register: register,
   login: login,
   current: current,
   subscription: subscription,
   logout: [authenticateToken, logout],
+  avatars: avatars,
 };
