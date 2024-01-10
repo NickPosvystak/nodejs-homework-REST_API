@@ -47,33 +47,33 @@ class ImageService {
 
 // SIMPLE MULTER EXAMPLE
 // config storage
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cbk) => {
-    cbk(null, 'public/images');
-  },
-  filename: (req, file, cbk) => {
-    const extension = file.mimetype.split('/')[1]; // 'image/png'
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cbk) => {
+//     cbk(null, 'public/images');
+//   },
+//   filename: (req, file, cbk) => {
+//     const extension = file.mimetype.split('/')[1]; // 'image/png'
 
-    // <userID>-<random uuid>.<extension>
-    cbk(null, `${req.user.id}-${uuid()}.${extension}`);
-  },
-});
+//     // <userID>-<random uuid>.<extension>
+//     cbk(null, `${req.user.id}-${uuid()}.${extension}`);
+//   },
+// });
 
-// config filter
-const multerFilter = (req, file, cbk) => {
-  if (file.mimetype.startsWith('image/')) {
-    cbk(null, true);
-  } else {
-    cbk(new HttpError(400, 'Please, upload images only!!'), false);
-  }
-};
+// // config filter
+// const multerFilter = (req, file, cbk) => {
+//   if (file.mimetype.startsWith('image/')) {
+//     cbk(null, true);
+//   } else {
+//     cbk(new HttpError(400, 'Please, upload images only!!'), false);
+//   }
+// };
 
-exports.uploadUserPhoto = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
-  limits: {
-    fileSize: 2 * 1024 * 1024,
-  },
-}).single('avatar');
+// exports.uploadUserPhoto = multer({
+//   storage: multerStorage,
+//   fileFilter: multerFilter,
+//   limits: {
+//     fileSize: 2 * 1024 * 1024,
+//   },
+// }).single('avatar');
 
 module.exports = ImageService;

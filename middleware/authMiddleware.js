@@ -51,9 +51,8 @@ const multerStorage = multer.diskStorage({
     cbk(null, 'public/avatars');
   },
   filename: (req, file, cbk) => {
-    const extension = file.mimetype.split('/')[1]; // 'image/png'
+    const extension = file.mimetype.split('/')[1]; 
 
-    // <userID>-<random uuid>.<extension>
     cbk(null, `${req.user.id}-${uuid()}.${extension}`);
   },
 });
