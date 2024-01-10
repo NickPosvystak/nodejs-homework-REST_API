@@ -6,14 +6,14 @@ const { signToken } = require("./jwtServices");
 exports.updateMe = async (userData, user, file) => {
   if (file) {
     console.log({ file });
-    // user.avatar = file.path.replace('public', '');
-    user.avatar = await ImageService.saveImage(
-      file,
-      { maxFileSize: 1.2, width: 100, height: 100 },
-      "avatars",
-      "users",
-      user.id
-      );
+    user.avatar = file.path.replace('public', '');
+    // user.avatar = await ImageService.saveImage(
+    //   file,
+    //   { maxFileSize: 1.2, width: 100, height: 100 },
+    //   "avatars",
+    //   "users",
+    //   user.id
+    //   );
       console.log('user: ========>❌', user);
   }
 

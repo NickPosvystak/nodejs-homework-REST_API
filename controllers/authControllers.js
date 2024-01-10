@@ -100,7 +100,10 @@ const subscription = async (req, res) => {
 
 const avatars = catchAsync(async (req, res) => {
   const updatedUser = await userServices.updateMe(req.body, req.user, req.file);
-  console.log('updatedUser:  ✅', updatedUser);
+  console.log('req.user,: ', req.user,);
+  console.log('req.body: ', req.body);
+  console.log("req.file): ", req.file);
+  console.log("updatedUser:  ✅", updatedUser);
 
   updatedUser.password = undefined;
 
@@ -108,10 +111,7 @@ const avatars = catchAsync(async (req, res) => {
     msg: "Success!",
     user: updatedUser,
   });
-
-}
-  
-)
+});
 
 module.exports = {
   register: register,
