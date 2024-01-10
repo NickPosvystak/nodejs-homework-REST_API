@@ -3,7 +3,7 @@ const { model, Schema } = require("mongoose");
 const Joi = require("joi");
 const { regex } = require("../constants");
 const handleMongooseError = require("../units/mongooseError");
-const crypto = require("crypto");
+
 
 const userSchema = new Schema(
   {
@@ -30,14 +30,7 @@ const userSchema = new Schema(
   }
 );
 
-userSchema.post("save", handleMongooseError, async function (next) {
-  if (this.isNew) {
-    const emailHash = crypto.createHash("md5").update(this.email).digest("hex");
-
-    this.avatarURL = `https://www.gravatar.com/avatar/${emailHash}.jpg?d=robohash`;
-  }
-   next();
-});
+userSchema.post("save", handleMongooseError);
 
 const registerSchema = Joi.object({
   email: Joi.string().pattern(regex.emailRegexp).required(),
