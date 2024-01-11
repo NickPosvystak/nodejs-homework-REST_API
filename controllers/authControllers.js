@@ -99,17 +99,14 @@ const subscription = async (req, res) => {
 };
 
 const avatars = catchAsync(async (req, res) => {
-  const updatedUser = await userServices.updateMe(req.body, req.user, req.file);
-  console.log('req.user,: ', req.user,);
-  console.log('req.body: ', req.body);
-  console.log("req.file): ", req.file);
+  const updatedUser = await userServices.updateMe(req.body, req.user, req.file, res);
   console.log("updatedUser:  ✅", updatedUser);
-
+  
   updatedUser.password = undefined;
 
   res.status(200).json({
     msg: "Success!",
-    user: updatedUser,
+    user: updatedUser
   });
 });
 

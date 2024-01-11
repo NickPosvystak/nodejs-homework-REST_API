@@ -46,9 +46,14 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 // SIMPLE MULTER EXAMPLE
 // config storage
+
+const TMP_DIR = path.join(__dirname, "..", "tmp");
+fse.ensureDirSync(TMP_DIR);
+
+
 const multerStorage = multer.diskStorage({
   destination: (req, file, cbk) => {
-    cbk(null, 'public/avatars');
+    cbk(null, TMP_DIR);
   },
   filename: (req, file, cbk) => {
     const extension = file.mimetype.split('/')[1]; 
@@ -74,4 +79,4 @@ exports.uploadUserPhoto = multer({
   },
 }).single('avatar');
 
-// exports.uploadUserPhoto = ImageService.uploadImage("avatar");
+
