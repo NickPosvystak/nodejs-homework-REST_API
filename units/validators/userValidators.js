@@ -17,5 +17,6 @@ exports.registerSchema = joiValidator((data) =>
   Joi.object({
     email: Joi.string().pattern(regex.emailRegexp).required(),
     password: Joi.string().min(6).required(),
+    avatarURL: Joi.string().allow(''),
   }).validate(data)
 );

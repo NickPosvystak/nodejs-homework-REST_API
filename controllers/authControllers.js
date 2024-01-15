@@ -1,13 +1,15 @@
 const bcrypt = require("bcrypt");
 const { User } = require("../models/userModel");
 const { catchAsync, HttpError } = require("../units");
-const { jwtServices } = require("../services");
+const { jwtServices, userServices } = require("../services");
 const { authenticateToken } = require("../middleware");
+const crypto = require("crypto");
 
 const register = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
+
   if (user) {
     throw new HttpError(409, "Email in use");
   }
@@ -16,10 +18,19 @@ const register = catchAsync(async (req, res) => {
 
   const newUser = await User.create({ email, password: hashPassword });
 
+  // Generate avatarURL
+  const emailHash = crypto.createHash("md5").update(email).digest("hex");
+  const avatarURL = `https://www.gravatar.com/avatar/${emailHash}.jpg?d=robohash`;
+
+  // Update user with avatarURL
+  newUser.avatarURL = avatarURL;
+  await newUser.save();
+
   res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL: newUser.avatarURL,
     },
   });
 });
@@ -87,10 +98,23 @@ const subscription = async (req, res) => {
   }
 };
 
+const avatars = catchAsync(async (req, res) => {
+  const updatedUser = await userServices.updateMe(req.body, req.user, req.file, res);
+  console.log("updatedUser:  ✅", updatedUser);
+  
+  updatedUser.password = undefined;
+
+  res.status(200).json({
+    msg: "Success!",
+    user: updatedUser
+  });
+});
+
 module.exports = {
   register: register,
   login: login,
   current: current,
   subscription: subscription,
   logout: [authenticateToken, logout],
+  avatars: avatars,
 };
