@@ -4,7 +4,6 @@ const Joi = require("joi");
 const { regex } = require("../constants");
 const handleMongooseError = require("../units/mongooseError");
 
-
 const userSchema = new Schema(
   {
     password: {
@@ -30,7 +29,6 @@ const userSchema = new Schema(
     verificationToken: {
       type: String,
       required: [true, "Verify token is required"],
-      
     },
   },
   {
@@ -54,7 +52,7 @@ const loginSchema = Joi.object({
 });
 
 const emailSchema = Joi.object({
-  email: Joi.string().email().required(),
+  email: Joi.string().pattern(regex.emailRegexp).required(),
 });
 
 const schemas = {
