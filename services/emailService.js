@@ -1,22 +1,23 @@
 const nodemailer = require("nodemailer");
-// const path = require("path");
+const path = require("path");
 
-require("dotenv").config();
+require("dotenv").config({
+  path: path.join(__dirname, "../envs/development.env"),
+});
 
-// const { MAILTRAP_USER, MAILTRAP_PASS } = process.env;
+const { MAILTRAP_USER, MAILTRAP_PASS } = process.env;
 
 const emailTransport = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",
   port: 2525,
-    auth: {
-    user: "f21de3a75574de",
-    pass: "53f01b66c15e23",
+  auth: {
+    user: MAILTRAP_USER,
+    pass: MAILTRAP_PASS,
   },
 });
 
-
 const sendEmail = async (data) => {
-  const email = { ...data, from: "f21de3a75574de" };
+  const email = { ...data, from: MAILTRAP_USER };
   await emailTransport
     .sendMail(email)
     .then(() => console.log("✅ email sent successfully"))
