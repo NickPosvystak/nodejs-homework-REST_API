@@ -6,13 +6,14 @@ const { authenticateToken } = require("../middleware");
 const crypto = require("crypto");
 const uuid = require("uuid").v4;
 const { serverConfig } = require("../config");
+const Email = require("../services/emailService");
 
 require("dotenv").config();
 
 const { BASE_URL } = process.env;
 
 const register = catchAsync(async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
   const user = await User.findOne({ email });
 
@@ -25,6 +26,7 @@ const register = catchAsync(async (req, res) => {
   const verificationToken = uuid();
 
   const newUser = await User.create({
+    name,
     email,
     password: hashPassword,
     verificationToken,
@@ -34,20 +36,19 @@ const register = catchAsync(async (req, res) => {
   // Generate avatarURL
   const emailHash = crypto.createHash("md5").update(email).digest("hex");
   const avatarURL = `https://www.gravatar.com/avatar/${emailHash}.jpg?d=robohash`;
-
-  const verifyEmail = {
-    to: email,
-    subject: "Verify email",
-    html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click to verify email</a>`,
-  };
-  await sendEmail(verifyEmail);
-
+  
   // Update user with avatarURL
   newUser.avatarURL = avatarURL;
   await newUser.save();
 
+
+  // Send email notification
+  const verifyLink = `${BASE_URL}/api/users/verify/${verificationToken}`;
+  await new Email(newUser, verifyLink).sendVerification();
+  
    res.status(201).json({
-    user: {
+     user: {
+      name: newUser.name,
       email: newUser.email,
       subscription: newUser.subscription,
       avatarURL: newUser.avatarURL,
@@ -76,7 +77,6 @@ const verifyEmail = catchAsync(async (req, res) => {
 });
 
 const resendVerification = catchAsync(async (req, res) => {
-  
   const { email } = req.body;
 
   const user = await User.findOne({ email });
@@ -90,14 +90,10 @@ const resendVerification = catchAsync(async (req, res) => {
       .status(400)
       .json({ error: "Verification has already been passed" });
   }
-  const emailVerificationLink = `${BASE_URL}/api/users/verify/${user.verificationToken}`;
-  
-  const verifyEmail = {
-    to: email,
-    subject: "Verify email",
-    html: `<a target="_blank" href="${emailVerificationLink}">Click to verify email</a>`,
-  };
-  await sendEmail(verifyEmail);
+
+  // Resend email verification link
+  const resendLink = `${BASE_URL}/api/users/verify/${user.verificationToken}`;
+  await new Email(user, resendLink).sendVerification();
 
   res.status(200).json({ message: "Verification email sent one more time" });
 });
@@ -124,6 +120,7 @@ const login = catchAsync(async (req, res) => {
   res.status(200).json({
     token: token,
     user: {
+      name: user.name,
       email: user.email,
       subscription: user.subscription,
     },
