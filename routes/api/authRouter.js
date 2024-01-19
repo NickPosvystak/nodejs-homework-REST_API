@@ -11,8 +11,11 @@ router.post(
   "/register",
   validateFields(schemas.registerSchema),
   authControllers.register
-);
-
+  );
+  
+router.get("/verify/:verificationToken", authControllers.verifyEmail);
+router.post("/verify", validateFields(schemas.emailSchema), authControllers.resendVerification);
+  
 router.post(
   "/login",
   validateFields(schemas.loginSchema),
@@ -31,5 +34,6 @@ router.patch(
   authMiddleware.uploadUserPhoto,
   authControllers.avatars
 );
+
 
 module.exports = router;

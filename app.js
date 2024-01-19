@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const contactsRouter = require("./routes/api/contactsRouter");
 const authRouter = require("./routes/api/authRouter");
-const { authenticateToken, authMiddleware } = require("./middleware");
+const { authenticateToken, authMiddleware} = require("./middleware");
 
 const app = express();
 
@@ -17,11 +17,13 @@ app.use(express.json());
 app.use(express.static("public"));
 
 
+
 app.use("/api/users", authRouter);
 
 app.use(authenticateToken, authMiddleware.protect)
 
 app.use("/api/contacts", contactsRouter);
+
 
 app.use((err, req, res, next) => {
   res.status(404).json({ message: "Not found" });
